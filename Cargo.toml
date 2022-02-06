@@ -2,8 +2,10 @@
 name = "objld"
 version = "0.2.0"
 authors = ["Error1000 <udreadanmihai@gmail.com>"]
-edition = "2018"
-
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Error1000/objld"
+description = "Parse and load .obj files with line-level parallelism, fast."
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
