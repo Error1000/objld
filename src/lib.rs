@@ -114,7 +114,7 @@ pub enum LineResult<'a, T, I>{
     Error(nom::Err<nom::error::Error<&'a str>>)
 }
 
-
+// Note: Basically only parallel function
 pub fn parse_file<'input, T, I>(input: &'input str) -> impl ParallelIterator<Item = LineResult<T, I>>
 where T: Send + FromStr + 'input, I: Send + FromStr + 'input{
     input.par_split('\n')
@@ -128,7 +128,7 @@ where T: Send + FromStr + 'input, I: Send + FromStr + 'input{
 }
 
 
-fn parse_line<T, I>(input: &str) -> IResult<&str, LineResult<T, I>>
+pub fn parse_line<T, I>(input: &str) -> IResult<&str, LineResult<T, I>>
 where T: FromStr, I: FromStr{
     use LineResult::VertDataLine;
     use LineResult::FaceLine;
