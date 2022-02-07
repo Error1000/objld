@@ -70,7 +70,7 @@ fn to_raw_data3d(parsed_data: Vec<LineResult<f32, i32>>) -> RawData3D{
                 Face::Face4 { v1, v2, v3, v4 } => {r.vert_ind.push(v1); r.vert_ind.push(v2); r.vert_ind.push(v3);  r.vert_ind.push(v3); r.vert_ind.push(v4); r.vert_ind.push(v1); },
             },
             LineResult::NoData => {},
-            LineResult::Error(_e) => {} // Ignore unparsed data
+            LineResult::Error(_e) => {println!("{}", _e)} // Ignore unparsed data
         }
     }
     r

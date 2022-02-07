@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use nom::{IResult, branch::alt, bytes::complete::tag, character::complete::{digit0, digit1, one_of, space0, space1}, combinator::{eof, opt, rest}, sequence::tuple};
+use nom::{IResult, branch::alt, bytes::complete::tag, character::complete::{digit0, digit1, one_of, space0, space1}, combinator::{eof, opt, rest}, sequence::tuple, multi::many0};
 use nom::combinator::{map, recognize};
 use nom::character::complete::char;
 use rayon::{iter::ParallelIterator, str::ParallelString};
@@ -160,11 +160,12 @@ where T: FromStr, I: FromStr{
 /// Primitive parsers
 /**********************************************************************************/
 #[inline]
-fn consume_num(input: &str) -> IResult<&str, &str>{ recognize(tuple( ( opt(one_of("+-")), digit1, opt(char('.')), digit0) ) )(input) }
+fn consume_num(input: &str) -> IResult<&str, &str>{ recognize(tuple( ( opt(one_of("+-")), digit1, opt(char('.')), digit0, /*exp*/ opt(tuple((char('e'), one_of("+-"), digit1))) /*exp*/ ) ) )(input) }
 
 #[inline]
 fn parse_float<T>(input: &str) -> IResult<&str, T>
 where T: FromStr{
+    
     let (input, num) = consume_num(input)?;
     let val: T = T::from_str(num).map_err(|_| nom::Err::Error(nom::error::Error::new(num, nom::error::ErrorKind::Float)))?;
     return Ok((input, val));
@@ -182,7 +183,7 @@ where T: FromStr{
 fn end_line(input: &str) -> IResult<&str, &str>{
     type Comment<'a> = &'a str;
    fn consume_comment(input: &str) -> IResult<&str, Comment> { recognize(tuple((space0, char('#'), rest)))(input) }
-   recognize(tuple((  space0, opt(consume_comment), eof  )))(input)
+   recognize(tuple((  space0, opt(consume_comment), many0(one_of("\r\n ")), eof  )))(input)
 }
 /**********************************************************************************/
 
