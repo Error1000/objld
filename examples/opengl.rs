@@ -17,9 +17,9 @@ struct F32Wrapper{
 impl F32Wrapper{
     fn key(&self) -> u64{
         let prec: u16 = 7;// digits in b10
-        let whole = self.inner as u64;
-        let frac = ((self.inner as f64 - whole as f64) * 10.0_f64.powi(prec.into())) as u64;
-        whole*10u64.pow(prec.into()) + frac
+        let whole = self.inner as i64;
+        let frac = ((self.inner as f64 - whole as f64) * 10.0_f64.powi(prec.into())) as i64;
+        (whole*10i64.pow(prec.into()) + frac) as u64
     }
 }
 
