@@ -107,22 +107,22 @@ mod tests {
 
 // A line can either contain vertex info or face info as far as this parser is concerned
 #[derive(Debug)]
-pub enum LineResult<'a, T, I>{
+pub enum LineResult<T, I>{
     VertDataLine(VertexData<T>),
     FaceLine(Face<I>),
     NoData,
-    Error(nom::Err<nom::error::Error<&'a str>>)
+    Error(String)
 }
 
 // Note: Basically only parallel function
-pub fn parse_file<'input, T, I>(input: &'input str) -> impl ParallelIterator<Item = LineResult<T, I>>
-where T: Send + FromStr + 'input, I: Send + FromStr + 'input{
+pub fn parse_file<'input, T, I>(input: &'input str) -> impl ParallelIterator<Item = LineResult<T, I>> + 'input /* can't iterate if the input is gone */
+where T: Send + FromStr, I: Send + FromStr{
     input.par_split('\n')
     .map(|line|
         parse_line(line)
         .map(|(_unconsumed, parsed)| parsed)
         .unwrap_or_else(|e|{
-            LineResult::Error(e)
+            LineResult::Error(e.to_string())
         })
     )
 }
